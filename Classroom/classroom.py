@@ -4,6 +4,7 @@ import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+import json
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/classroom.courses.readonly', 'https://www.googleapis.com/auth/classroom.rosters', 'https://www.googleapis.com/auth/classroom.rosters.readonly', 'https://www.googleapis.com/auth/classroom.profile.emails']
@@ -35,18 +36,16 @@ def main():
 
     # Call the Classroom API
     results = service.courses().students().list(pageSize="10", courseId='233667426861').execute()
-    students = results.get('students', [])
+    students = results.get('students')
 
     if not students:
         print('No students found')
 
     else:
         print('Students:')
-        for student in students['profile']:
-            for email in student['emailAddress']:
-                print(email)
-
-    
+        for student in students:
+            profiles = student['profile']
+            print(profiles['emailAddress'])
 
 if __name__ == '__main__':
     main()
